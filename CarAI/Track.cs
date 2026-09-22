@@ -7,7 +7,7 @@ namespace CarAI
 {
     public class Track
     {
-        public Car.Directions StartingDirection { get; private set; } = Car.Directions.Left;
+        public Direction StartingDirection { get; private set; } = new Direction();
         public Point StartPoint { get; private set; } = new Point(10, 10);
         public List<Point> Borderpoints  { get; set; } = new List<Point>();
         private List<Point> OuterBorderPoints { get; set; } = new List<Point>();

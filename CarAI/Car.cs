@@ -4,28 +4,10 @@ using System.Linq;
 
 namespace CarAI
 {
-    public class CarLocation
-    {
-        private Point Location;
-        private Car.Directions Direction;
-
-        public CarLocation(Point location, Car.Directions direction)
-        {
-            Location = location;
-            Direction = direction;
-        }
-
-        public Car.Directions GetDirection()
-        {
-            return Direction;
-        }
-    }
-
     public class Car
     {
         public enum Stati { Good, Crashed }
-        public enum Directions { Left, Right, Up, Down }
-        private Directions Direction = Directions.Up;
+        public Direction Direction { get; private set; } = new Direction();
         private Stati Status = Stati.Good;
         private const int MAXSPEED = 10;
         private const int MINSPEED = 1;
@@ -37,7 +19,7 @@ namespace CarAI
         private Random Random { get; set; } = new Random();
         private bool CanCrash = true;
 
-        public Car(int id, Point startingPoint, Directions direction = Directions.Left, bool canCrash = true)
+        public Car(int id, Point startingPoint, Direction direction, bool canCrash = true)
         {
             Id = id;
             CurrentLocation = StartLocation = startingPoint;
@@ -53,7 +35,7 @@ namespace CarAI
                 return false;
 
             bool speedup = true;
-            Directions lastDirection = DrivenWay.Last().GetDirection();
+            Direction lastDirection = DrivenWay.Last().Direction;
 
             for (int a = 0; a < 3; a++)
             {
@@ -61,7 +43,7 @@ namespace CarAI
                 if (index < 0)
                     break;
 
-                if (DrivenWay[index].GetDirection() != lastDirection)
+                if (DrivenWay[index].Direction.Degrees != lastDirection.Degrees)
                 {
                     speedup = false;
                     break;
@@ -76,20 +58,8 @@ namespace CarAI
             if (allowSpeedup && CheckSpeedUpPossible())
                 SpeedUp();
 
-
-            // Training()
-
-            int x = 0;
-            if (Direction == Directions.Left)
-                x = -1;
-            else if (Direction == Directions.Right)
-                x = 1;
-
-            int y = 0;
-            if (Direction == Directions.Up)
-                y = -1;
-            else if (Direction == Directions.Down)
-                y = 1;
+            int x = Direction.XDirection;
+            int y = Direction.YDirection;
 
             Point tryPoint = new Point(CurrentLocation.X + x * Speed, CurrentLocation.Y + y * Speed);
 
@@ -103,28 +73,7 @@ namespace CarAI
                 Status = Stati.Crashed;
                 return CurrentLocation;
             }
-
-            // try out
-            for (int a = 0; a < 100; a++)
-            {
-                x = Random.Next(-1, 2);
-                y = Random.Next(-1, 2);
-                tryPoint = new Point(CurrentLocation.X + x * Speed, CurrentLocation.Y + y * Speed);
-                if (track.IsOnTrack(tryPoint))
-                {
-                    if (x == -1)
-                        Direction = Directions.Left;
-                    else if (x == 1)
-                        Direction = Directions.Right;
-
-                    if (y == -1)
-                        Direction = Directions.Up;
-                    else if (y == 1)
-                        Direction = Directions.Down;
-
-                    return tryPoint;
-                }
-            }
+         
             if (CanCrash)
                 Status = Stati.Crashed;
 
@@ -153,20 +102,6 @@ namespace CarAI
         private Point GetNextTrainedLocation(Track track, Training training)
         {
             return CurrentLocation;
-
-        }
-
-        public Directions GetDirection()
-        {
-            return Direction;
-        }
-
-        public void Rotate90Degrees()
-        {
-            if (Direction == Directions.Left) Direction = Directions.Up;
-            if (Direction == Directions.Down) Direction = Directions.Left;
-            if (Direction == Directions.Right) Direction = Directions.Down;
-            if (Direction == Directions.Up) Direction = Directions.Right;
         }
     }
 }
