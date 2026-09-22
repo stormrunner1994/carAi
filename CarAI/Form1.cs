@@ -96,5 +96,10 @@ namespace CarAI
             int numberCars = 5;
             Int32.TryParse(comboBoxNumberCars.Text, out numberCars);
         }
+
+        private void buttonNextStep_Click(object sender, EventArgs e)
+        {
+            Simulator.NextMove();
+        }
     }
 }

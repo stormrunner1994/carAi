@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Car.cs" />
     <Compile Include="Carlo.cs" />
+    <Compile Include="CarPictureBoxWrapper.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
