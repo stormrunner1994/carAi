@@ -2,42 +2,43 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using PanelDrawing_;
 
 namespace CarAI
 {
     public class Track
     {
         public Direction StartingDirection { get; private set; } = new Direction();
-        public Point StartPoint { get; private set; } = new Point(10, 10);
-        public List<Point> Borderpoints  { get; set; } = new List<Point>();
-        private List<Point> OuterBorderPoints { get; set; } = new List<Point>();
-        private List<Point> InnerBorderPoints { get; set; } = new List<Point>();
+        public Location StartLocation { get; private set; } = new Location(10, 10);
+        public List<Location> BorderLocations  { get; set; } = new List<Location>();
+        private List<Location> OuterBorderLocations { get; set; } = new List<Location>();
+        private List<Location> InnerBorderLocations { get; set; } = new List<Location>();
         public Line StartFinishLine { get; private set; }
         public List<Line> OuterBorderLines { get; private set; } = new List<Line>();
         public List<Line> InnerBorderLines { get; private set; } = new List<Line>();
 
         public Track()
         {
-            InnerBorderPoints.Add(new Point(40, 40));
-            InnerBorderPoints.Add(new Point(100, 40));
-            InnerBorderPoints.Add(new Point(100, 100));
-            InnerBorderPoints.Add(new Point(40, 100));
+            InnerBorderLocations.Add(new Location(40, 40));
+            InnerBorderLocations.Add(new Location(100, 40));
+            InnerBorderLocations.Add(new Location(100, 100));
+            InnerBorderLocations.Add(new Location(40, 100));
 
-            OuterBorderPoints.Add(new Point(10, 10));
-            OuterBorderPoints.Add(new Point(130, 10));
-            OuterBorderPoints.Add(new Point(130, 130));
-            OuterBorderPoints.Add(new Point(10, 130));
+            OuterBorderLocations.Add(new Location(10, 10));
+            OuterBorderLocations.Add(new Location(130, 10));
+            OuterBorderLocations.Add(new Location(130, 130));
+            OuterBorderLocations.Add(new Location(10, 130));
             SimplifyTrackPath(4, 4);
 
-            StartPoint = new Point(75, 115);
-           // StartFinishLine = new Line(new Point())
+            StartLocation = new Location(75, 115);
+           // StartFinishLine = new Line(new Location())
         }
 
-        public Track(Point startPoint, List<Point> innerBorderPoints, List<Point> outerBorderPoints)
+        public Track(Location startLocation, List<Location> innerBorderLocations, List<Location> outerBorderLocations)
         {
-            StartPoint = startPoint;
-            InnerBorderPoints = innerBorderPoints;
-            OuterBorderPoints = outerBorderPoints;
+            StartLocation = startLocation;
+            InnerBorderLocations = innerBorderLocations;
+            OuterBorderLocations = outerBorderLocations;
         }
 
 
@@ -51,14 +52,14 @@ namespace CarAI
                 Dictionary<int, int> dict = new Dictionary<int, int>();
                 Track track = new Track();
                 Bitmap bmp = new Bitmap(file);
-                List<Point> borderPoints = new List<Point>();
+                List<Location> borderLocations = new List<Location>();
                 for (int y = 0; y < bmp.Height; y++)
                 {
                     for (int x = 0; x < bmp.Width; x++)
                     {
                         int argb = bmp.GetPixel(x, y).ToArgb();
                         if (argb == -16777216)
-                            borderPoints.Add(new Point(x, y));
+                            borderLocations.Add(new Location(x, y));
 
 
                         if (bmp.GetPixel(x, y).IsKnownColor)
@@ -69,12 +70,12 @@ namespace CarAI
                         else
                             dict.Add(argb, 1);
                         //if (color == Color.Red)
-                        //    track.StartFinishLine.Add(new Point(x, y));                        
+                        //    track.StartFinishLine.Add(new Location(x, y));                        
                     }
                 }
 
-                track.Borderpoints = borderPoints;
-                track.SetTrackPath(borderPoints);
+                track.BorderLocations = borderLocations;
+                track.SetTrackPath(borderLocations);
                 track.SimplifyTrackPath(maxInnerBorderLines, maxOuterBorderLines);
                 return track;
             }
@@ -88,61 +89,61 @@ namespace CarAI
 
         private bool SimplifyTrackPath(int maxInnerBorderLines, int maxOuterBorderLines)
         {
-            if (InnerBorderPoints.Count < 2 || OuterBorderPoints.Count < 2)
+            if (InnerBorderLocations.Count < 2 || OuterBorderLocations.Count < 2)
                 return false;
 
             InnerBorderLines = new List<Line>();
             OuterBorderLines = new List<Line>();
 
-            int stepsize = InnerBorderPoints.Count / maxInnerBorderLines;
+            int stepsize = InnerBorderLocations.Count / maxInnerBorderLines;
             int index = stepsize;
-            Point from = InnerBorderPoints.First();
+            Location from = InnerBorderLocations.First();
 
-            while (index < InnerBorderPoints.Count)
+            while (index < InnerBorderLocations.Count)
             {
-                Point to = InnerBorderPoints[index];
-                InnerBorderLines.Add(new Line(from, to));
+                Location to = InnerBorderLocations[index];
+                InnerBorderLines.Add(new Line(from, to, Line.Colors.Red, 2));
                 from = to;
                 index += stepsize;
             }
             // close the circle
-            InnerBorderLines.Add(new Line(InnerBorderLines.Last().Point2, InnerBorderLines.First().Point1));
+            InnerBorderLines.Add(new Line(InnerBorderLines.Last().PointB, InnerBorderLines.First().PointA, Line.Colors.Red,2));
 
 
-            stepsize = OuterBorderPoints.Count / maxOuterBorderLines;
+            stepsize = OuterBorderLocations.Count / maxOuterBorderLines;
             index = stepsize;
-            from = OuterBorderPoints.First();
+            from = OuterBorderLocations.First();
 
-            while (index < OuterBorderPoints.Count)
+            while (index < OuterBorderLocations.Count)
             {
-                Point to = OuterBorderPoints[index];
-                OuterBorderLines.Add(new Line(from, to));
+                Location to = OuterBorderLocations[index];
+                OuterBorderLines.Add(new Line(from, to, Line.Colors.Blue, 2));
                 from = to;
                 index += stepsize;
             }
             // close the circle
-            OuterBorderLines.Add(new Line(OuterBorderLines.Last().Point2, OuterBorderLines.First().Point1));
+            OuterBorderLines.Add(new Line(OuterBorderLines.Last().PointB, OuterBorderLines.First().PointA, Line.Colors.Blue, 2));
 
             return true;
         }
 
-        private bool SetTrackPath(List<Point> borderPoints)
+        private bool SetTrackPath(List<Location> borderLocations)
         {
-            if (borderPoints.Count == 0) return false;
+            if (borderLocations.Count == 0) return false;
 
-            OuterBorderPoints.Clear();
-            InnerBorderPoints.Clear();
+            OuterBorderLocations.Clear();
+            InnerBorderLocations.Clear();
 
-            List<Point> ordered = borderPoints; //.OrderBy(i => i.X).ToList();
-            Point current = ordered.First();
+            List<Location> ordered = borderLocations; //.OrderBy(i => i.X).ToList();
+            Location current = ordered.First();
 
             for (int a = 0; a < ordered.Count; a++)
             {
                 current = ordered[a];
-                Point closest = ordered.Last();
+                Location closest = ordered.Last();
                 double shortestDistance = Helper.CalcDistance(current, closest);
 
-                // find point with minmal distance
+                // find Location with minmal distance
                 for (int b = a + 1; b < ordered.Count; b++)
                 {
                     double dist = Helper.CalcDistance(current, ordered[b]);
@@ -162,29 +163,29 @@ namespace CarAI
 
                 ordered.Remove(current);
                   a--;
-                OuterBorderPoints.Add(closest);
+                OuterBorderLocations.Add(closest);
             }
 
             // others should be inner border
-            InnerBorderPoints.AddRange(ordered);
+            InnerBorderLocations.AddRange(ordered);
 
             return true;
         }
 
-        public bool IsOnTrack(Point point)
+        public bool IsOnTrack(Location Location)
         {
             // first find lines where x in between
-            var relevantInnerLines = InnerBorderLines.Where(i => i.Point1.X >= point.X && i.Point2.X <= point.X
-             || i.Point1.X <= point.X && i.Point2.X >= point.X).ToList();
+            var relevantInnerLines = InnerBorderLines.Where(i => i.PointA.X >= Location.X && i.PointB.X <= Location.X
+             || i.PointA.X <= Location.X && i.PointB.X >= Location.X).ToList();
 
-            var relevantOuterLines = OuterBorderLines.Where(i => i.Point1.X >= point.X && i.Point2.X <= point.X
-          || i.Point1.X <= point.X && i.Point2.X >= point.X).ToList();
+            var relevantOuterLines = OuterBorderLines.Where(i => i.PointA.X >= Location.X && i.PointB.X <= Location.X
+          || i.PointA.X <= Location.X && i.PointB.X >= Location.X).ToList();
 
             if (!relevantInnerLines.Any() || !relevantOuterLines.Any())
                 return false;
 
 
-           // InnerBorderLines.FirstOrDefault(i=>i.Point1.X -point.X)
+           // InnerBorderLines.FirstOrDefault(i=>i.Location1.X -Location.X)
 
             return true;
         }

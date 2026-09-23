@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using PanelDrawing_;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CarAI
@@ -9,40 +11,25 @@ namespace CarAI
     public static  class Viewer
     {
         private static Form1 Form;
-        private static Track Track = new Track();
         private static List<CarPictureBoxWrapper> Cars = new List<CarPictureBoxWrapper>();
         public static void Init(Form1 form)
         {
             Form = form;
-            Form.GetPanel().Paint += Viewer_Paint;
-        }
+            PanelDrawing.Init(Form.GetPanel());
+        }    
 
-        private static void Viewer_Paint(object sender, PaintEventArgs e)
+        public static void DisplayTrack(Track track, List<CarPictureBoxWrapper> cars)
         {
-            Color color = Color.Black;
+            Cars = cars;
 
-
-            //Brush brush = new SolidBrush(color);
-            //foreach (var point in Track.Borderpoints)
-            //    e.Graphics.FillEllipse(brush, point.X, point.Y, 3, 3);
-
-            // paint track borders
-            foreach (var line in Track.OuterBorderLines)
-                e.Graphics.DrawLine(new Pen(Color.Red), line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y);
-
-            foreach (var line in Track.InnerBorderLines)
-                e.Graphics.DrawLine(new Pen(Color.Blue), line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y);
+            List<Element> elements = new List<Element>();
+            elements.AddRange(track.OuterBorderLines);
+            elements.AddRange(track.InnerBorderLines);
+            PanelDrawing.Update(elements);
 
             Form.GetPanel().Controls.Clear();
             foreach (CarPictureBoxWrapper wrapper in Cars)
                 Form.GetPanel().Controls.Add(wrapper.PictureBox);
-        }
-
-        public static void DisplayTrack(Track track, List<CarPictureBoxWrapper> cars)
-        {
-            Track = track;
-            Cars = cars;
-            Form.GetPanel().Invalidate();
         }
 
         public static Bitmap ResizeImage(Image image, int width, int height)

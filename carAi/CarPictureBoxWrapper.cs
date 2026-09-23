@@ -12,7 +12,7 @@ namespace CarAI
         public CarPictureBoxWrapper(Track track, Car car)
         {
             Car = car;
-            PictureBox.Location = new System.Drawing.Point(track.StartPoint.X, track.StartPoint.Y);
+            PictureBox.Location = new System.Drawing.Point(track.StartLocation.X, track.StartLocation.Y);
             Image image = Image.FromFile(GetRaceCarImagePath());
             image.RotateFlip(GetInitialRotation(track.StartingDirection));
             image = Viewer.ResizeImage(image, 10, 10);

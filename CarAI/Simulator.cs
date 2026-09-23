@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PanelDrawing_;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace CarAI
 
             for (int a = 0; a < numberCars; a++)
             {
-                Car car = new Car(Cars.Count, track.StartPoint, track.StartingDirection, canCrash);
+                Car car = new Car(Cars.Count, track.StartLocation, track.StartingDirection, canCrash);
                 CarPictureBoxWrapper wrapper = new CarPictureBoxWrapper(track, car);
                 Cars.Add(wrapper);
             }
@@ -92,7 +93,7 @@ namespace CarAI
                     }
 
 
-                    Point current = wrapper.Car.CurrentLocation;
+                    Location current = wrapper.Car.CurrentLocation;
                     Invoker_.Invoker.invokeSetLocation(wrapper.PictureBox, new System.Drawing.Point(current.X, current.Y));
                     // Thread.Sleep(1);
                 }

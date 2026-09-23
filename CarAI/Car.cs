@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PanelDrawing_;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,17 +13,17 @@ namespace CarAI
         private const int MAXSPEED = 10;
         private const int MINSPEED = 1;
         private int Speed = 1;
-        public Point StartLocation { get; private set; }
-        public Point CurrentLocation { get; private set; }
+        public Location StartLocation { get; private set; }
+        public Location CurrentLocation { get; private set; }
         public List<CarLocation> DrivenWay { get; } = new List<CarLocation>();
         public int Id { get; private set; }
         private Random Random { get; set; } = new Random();
         private bool CanCrash = true;
 
-        public Car(int id, Point startingPoint, Direction direction, bool canCrash = true)
+        public Car(int id, Location startLocation, Direction direction, bool canCrash = true)
         {
             Id = id;
-            CurrentLocation = StartLocation = startingPoint;
+            CurrentLocation = StartLocation = startLocation;
             Direction = direction;
             CanCrash = canCrash;
         }
@@ -53,7 +54,7 @@ namespace CarAI
             return speedup && Speed + 1 <= MAXSPEED;
         }
 
-        private Point GetNextRandomLocation(Track track, bool allowSpeedup = true)
+        private Location GetNextRandomLocation(Track track, bool allowSpeedup = true)
         {
             if (allowSpeedup && CheckSpeedUpPossible())
                 SpeedUp();
@@ -61,12 +62,12 @@ namespace CarAI
             int x = Direction.XDirection;
             int y = Direction.YDirection;
 
-            Point tryPoint = new Point(CurrentLocation.X + x * Speed, CurrentLocation.Y + y * Speed);
+            Location tryLocation = new Location(CurrentLocation.X + x * Speed, CurrentLocation.Y + y * Speed);
 
             // scan circumstances
             // found valid location
-            if (track.IsOnTrack(tryPoint))
-                return tryPoint;
+            if (track.IsOnTrack(tryLocation))
+                return tryLocation;
 
             if (CanCrash)
             {
@@ -99,7 +100,7 @@ namespace CarAI
             return Status == Stati.Good;
         }
 
-        private Point GetNextTrainedLocation(Track track, Training training)
+        private Location GetNextTrainedLocation(Track track, Training training)
         {
             return CurrentLocation;
         }
