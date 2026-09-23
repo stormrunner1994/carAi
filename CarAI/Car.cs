@@ -92,15 +92,15 @@ namespace CarAI
                 Speed--;
         }
 
-        public bool Move(Track track, Training training)
+        public bool Move(Track track, Pilot? pilot)
         {
             DrivenWay.Add(new CarLocation(CurrentLocation, Direction));
-            CurrentLocation = training == null ? GetNextRandomLocation(track) : GetNextTrainedLocation(track, training);
+            CurrentLocation = pilot == null ? GetNextRandomLocation(track) : GetNextTrainedLocation(track, pilot);
            
             return Status == Stati.Good;
         }
 
-        private Location GetNextTrainedLocation(Track track, Training training)
+        private Location GetNextTrainedLocation(Track track, Pilot pilot)
         {
             return CurrentLocation;
         }

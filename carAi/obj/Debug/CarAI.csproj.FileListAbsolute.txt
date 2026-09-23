@@ -1,10 +1,10 @@
-C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.exe.config
-C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.exe
-C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.pdb
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.csproj.AssemblyReference.cache
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.Form1.resources
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.Properties.Resources.resources
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.csproj.GenerateResource.cache
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.csproj.CoreCompileInputs.cache
+C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.exe.config
+C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.exe
+C:\Users\larsp\Desktop\CarAi\CarAI\bin\Debug\CarAI.pdb
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.exe
 C:\Users\larsp\Desktop\CarAi\CarAI\obj\Debug\CarAI.pdb
